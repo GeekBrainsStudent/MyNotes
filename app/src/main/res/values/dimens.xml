@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="titleTextSize">25sp</dimen>
+    <dimen name="describeTextSize">20sp</dimen>
+
+    <dimen name="rootFragmentPadding">16dp</dimen>
+
+</resources>
