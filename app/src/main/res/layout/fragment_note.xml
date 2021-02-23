@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    style="@style/fragmentRootStyle">
+    style="@style/FragmentRootStyle">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/title_layout"
@@ -15,7 +15,7 @@
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.App.TextInputEditText.titleStyle" />
+            style="@style/TitleStyle" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
