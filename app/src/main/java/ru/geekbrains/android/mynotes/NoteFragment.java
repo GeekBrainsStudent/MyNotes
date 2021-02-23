@@ -1,7 +1,11 @@
 package ru.geekbrains.android.mynotes;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -23,7 +27,16 @@ public class NoteFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_note, container, false);
+        View view = inflater.inflate(R.layout.fragment_note, container, false);
+        setHasOptionsMenu(true);
+        Log.d("TAG", "onCreateView NoteFragment");
+        return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("TAG", "onDestroy NoteFragment");
     }
 
     @Override
@@ -33,6 +46,23 @@ public class NoteFragment extends Fragment {
         MyNote note = (MyNote) this.getArguments().getSerializable(KEY_NOTE);
         if(note != null) {
             setNote(note);
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.fragment_note_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.share:
+//                TODO поделиться
+            case R.id.add_image:
+//                TODO загрузить изображение
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
