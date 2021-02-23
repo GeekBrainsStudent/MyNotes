@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/system_mode"
+        android:icon="@drawable/ic_baseline_android_24"
+        android:orderInCategory="1"
+        android:title="Follow system dark mode"
+        app:actionLayout="@layout/layout_checkbox_systemmode" />
+
+    <item
+        android:id="@+id/dark_mode"
+        android:icon="@drawable/ic_baseline_bedtime_24"
+        android:orderInCategory="2"
+        android:title="Dark mode"
+        app:actionLayout="@layout/layout_switch_darkmode"
+        />
+
+    <item
+        android:id="@+id/about"
+        android:icon="@android:drawable/ic_menu_info_details"
+        android:orderInCategory="3"
+        android:title="about" />
+
+
+</menu>
