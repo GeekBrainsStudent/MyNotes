@@ -1,7 +1,6 @@
 package ru.geekbrains.android.mynotes;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,19 +23,20 @@ public class NoteFragment extends Fragment {
     private final static String KEY_NOTE = "key_note";
     private LinearLayout root;
 
+    public static NoteFragment newInstance(MyNote note) {
+        NoteFragment fragment = new NoteFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(KEY_NOTE, note);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_note, container, false);
         setHasOptionsMenu(true);
-        Log.d("TAG", "onCreateView NoteFragment");
         return view;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d("TAG", "onDestroy NoteFragment");
     }
 
     @Override
@@ -47,6 +47,19 @@ public class NoteFragment extends Fragment {
         if(note != null) {
             setNote(note);
         }
+    }
+
+    public void setNote(MyNote note) {
+        String title = note.getTitle();
+        String describe = note.getDescribe();
+        Date date = note.getCreate_at();
+
+        TextInputLayout titleLayout = root.findViewById(R.id.title_layout);
+        titleLayout.setHelperText("created at: " + date);
+        TextInputEditText titleView = root.findViewById(R.id.title);
+        titleView.setText(title);
+        TextInputEditText describeView = root.findViewById(R.id.describe);
+        describeView.setText(describe);
     }
 
     @Override
@@ -64,26 +77,5 @@ public class NoteFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    public static NoteFragment newInstance(MyNote note) {
-        NoteFragment fragment = new NoteFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(KEY_NOTE, note);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
-    public void setNote(MyNote note) {
-        String title = note.getTitle();
-        String describe = note.getDescribe();
-        Date date = note.getCreate_at();
-
-        TextInputLayout titleLayout = root.findViewById(R.id.title_layout);
-        titleLayout.setHelperText("created at: " + date);
-        TextInputEditText titleView = root.findViewById(R.id.title);
-        titleView.setText(title);
-        TextInputEditText describeView = root.findViewById(R.id.describe);
-        describeView.setText(describe);
     }
 }
