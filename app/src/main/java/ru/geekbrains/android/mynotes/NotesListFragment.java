@@ -31,6 +31,13 @@ public class NotesListFragment extends Fragment {
 
     private static final String KEY_NOTES_LIST = "key_notes_list";
     private LinearLayout root;
+    private CallBack callBack;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        callBack = (CallBack) context;
+    }
 
     @Nullable
     @Override
@@ -64,6 +71,12 @@ public class NotesListFragment extends Fragment {
 
         NotesListAdapter adapter = new NotesListAdapter(notes);
         recyclerView.setAdapter(adapter);
+
+        adapter.setOnItemClickListener((v, pos) -> {
+            if(callBack != null) {
+                callBack.onItemClick(pos);
+            }
+        });
     }
 
     @Override
@@ -82,6 +95,16 @@ public class NotesListFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        callBack = null;
+    }
+
+    public interface CallBack {
+        void onItemClick(int pos);
     }
 
     private TextInputLayout createTextInputLayout(MyNote note) {

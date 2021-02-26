@@ -25,7 +25,9 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NotesListFragment.CallBack {
+
+    ArrayList<MyNote> notes = new Data().getData();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +37,6 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = initToolBar();
         initDrawer(toolbar);
         setListenersNavigationMenu();
-
-        ArrayList<MyNote> notes = new Data().getData();
 
         setFragments(notes);
     }
@@ -142,5 +142,16 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
          setSupportActionBar(toolbar);
         return toolbar;
+    }
+
+    @Override
+    public void onItemClick(int pos) {
+        FragmentManager fm = getSupportFragmentManager();
+        boolean isLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+        int fragmentContainer = (isLandscape) ? R.id.fragment_content : R.id.fragment_list;
+        fm.beginTransaction()
+                .replace(fragmentContainer, NoteFragment.newInstance(notes.get(pos)))
+                .addToBackStack(null)
+                .commit();
     }
 }
