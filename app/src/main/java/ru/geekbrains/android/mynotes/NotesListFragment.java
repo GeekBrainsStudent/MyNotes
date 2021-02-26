@@ -18,6 +18,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -50,13 +52,18 @@ public class NotesListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         root = (LinearLayout) view;
         ArrayList<MyNote> notes = (ArrayList<MyNote>) this.getArguments().getSerializable(KEY_NOTES_LIST);
-        if(notes != null) {
-            for(MyNote note : notes) {
-                TextInputLayout tvLayout = createTextInputLayout(note);
-                setOnClickListener(tvLayout, note);
-                root.addView(tvLayout);
-            }
-        }
+        initRecyclerView(notes);
+    }
+
+    private void initRecyclerView(ArrayList<MyNote> notes) {
+        RecyclerView recyclerView = root.findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize(true);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(root.getContext());
+        recyclerView.setLayoutManager(layoutManager);
+
+        NotesListAdapter adapter = new NotesListAdapter(notes);
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
