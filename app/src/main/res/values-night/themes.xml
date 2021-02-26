@@ -1,54 +1,34 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.MyNotes" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:windowBackground">@color/black</item>
-        <item name="textInputStyle">@style/MyTextInputLayoutStyle</item>
-        <item name="appBarLayoutStyle">@style/MyAppBarLayoutStyle</item>
-        <item name="toolbarStyle">@style/MyToolbarStyle</item>
+        <item name="android:windowBackground">@color/cyan50</item>
+        <item name="toolbarStyle">@style/ToolbarStyle</item>
+
+        <item name="navigationViewStyle">@style/NavigationViewStyle</item>
+        <item name="cardViewStyle">@style/CardViewStyle</item>
+        <item name="textInputStyle">@style/TextInputStyle</item>
+        <item name="editTextStyle">@style/EditTextStyle</item>
     </style>
 
-    <style name="MyNavigationViewStyle">
-        <item name="android:background">@color/black</item>
-    </style>
-
-    <style name="MyNavigationViewHeaderStyle">
+    <style name="ToolbarStyle" parent="Widget.MaterialComponents.Toolbar">
         <item name="android:background">@color/cyan900</item>
-        <item name="android:layout_margin">4dp</item>
-        <item name="android:padding">8dp</item>
-        <item name="android:textViewStyle">@style/NavHeaderTextInputEditTextStyle</item>
-    </style>
-
-    <style name="NavHeaderTextInputTextLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
-        <item name="boxBackgroundColor">@color/cyan900</item>
+        <item name="titleTextColor">@color/white</item>
     </style>
 
 
-    <style name="NavHeaderTextInputEditTextStyle">
-        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Headline6</item>
-        <item name="color">@color/white</item>
+    <style name="NavigationViewStyle" parent="Widget.Design.NavigationView">
+        <item name="android:background">@color/cyan900</item>
     </style>
 
-    <style name="MyToolbarStyle" parent="Widget.MaterialComponents.Toolbar">
-        <item name="android:background">@color/cyan600</item>
+    <style name="CardViewStyle" parent="Widget.MaterialComponents.CardView">
     </style>
 
-    <style name="MyAppBarLayoutStyle" parent="Widget.MaterialComponents.AppBarLayout.Primary">
-        <item name="android:background">@color/cyan500</item>
-    </style>
-
-    <style name="MyTextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+    <style name="TextInputStyle" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
         <item name="boxBackgroundColor">@color/cyan50</item>
+        <item name="android:background">@color/cyan50</item>
     </style>
 
-    <style name="TitleStyle" parent="Widget.AppCompat.EditText">
-        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Headline4</item>
+    <style name="EditTextStyle" parent="Widget.AppCompat.EditText">
     </style>
 
-    <style name="DescribeStyle" parent="Widget.AppCompat.EditText">
-        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Body2</item>
-    </style>
-
-    <style name="FragmentRootStyle">
-        <item name="android:padding">@dimen/rootFragmentPadding</item>
-    </style>
 </resources>
