@@ -11,12 +11,10 @@ import androidx.fragment.app.FragmentManager;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.RadioGroup;
 
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.internal.NavigationMenuItemView;
