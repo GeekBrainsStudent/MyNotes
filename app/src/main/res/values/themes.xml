@@ -1,34 +1,110 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.MyNotes" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:windowBackground">@color/cyan50</item>
-        <item name="toolbarStyle">@style/ToolbarStyle</item>
+        <item name="colorPrimaryDark">@color/white</item>
+        <item name="colorAccent">@color/black</item>
 
+        <item name="android:windowBackground">@color/header_and_background</item>
+        <item name="toolbarStyle">@style/ToolbarStyle</item>
+        <item name="iconTint">@color/icon_tint</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="navigationViewStyle">@style/NavigationViewStyle</item>
-        <item name="cardViewStyle">@style/CardViewStyle</item>
+        <item name="materialCardViewStyle">@style/CardViewStyle</item>
+        <item name="android:textViewStyle">@style/TextViewStyle</item>
         <item name="textInputStyle">@style/TextInputStyle</item>
         <item name="editTextStyle">@style/EditTextStyle</item>
+        <item name="materialButtonStyle">@style/ButtonStyle</item>
     </style>
 
     <style name="ToolbarStyle" parent="Widget.MaterialComponents.Toolbar">
-        <item name="android:background">@color/cyan900</item>
-        <item name="titleTextColor">@color/white</item>
+        <item name="android:background">@color/header_and_background</item>
+        <item name="titleTextColor">@color/text_color</item>
     </style>
 
+    <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="spinBars">true</item>
+        <item name="color">@color/spin_bars_color</item>
+    </style>
 
     <style name="NavigationViewStyle" parent="Widget.Design.NavigationView">
-        <item name="android:background">@color/cyan900</item>
+        <item name="android:background">@color/header_and_background</item>
+        <item name="itemIconTint">@color/icon_tint</item>
+    </style>
+
+    <style name="NavigationViewHeaderStyle">
+        <item name="android:background">@color/content_background</item>
+        <item name="android:layout_margin">@dimen/nav_header_margin</item>
+    </style>
+
+    <style name="NavigationViewHeaderStyle.TextViewStyle">
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Headline5</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@color/text_color</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="NavigationViewHeaderStyle.ImageStyle">
+        <item name="android:tint">@color/icon_tint</item>
+    </style>
+
+    <style name="FragmentRootPadding">
+        <item name="android:paddingTop">@dimen/fragment_root_padding_top</item>
+        <item name="android:paddingBottom">@dimen/fragment_root_padding_bottom</item>
+        <item name="android:paddingStart">@dimen/fragment_root_padding_start</item>
+        <item name="android:paddingEnd">@dimen/fragment_root_padding_end</item>
     </style>
 
     <style name="CardViewStyle" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/content_background</item>
+        <item name="cardCornerRadius">@dimen/card_corner_radius</item>
+    </style>
+
+    <style name="TextViewStyle" parent="Widget.AppCompat.TextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:paddingTop">@dimen/card_text_view_padding_top</item>
+        <item name="android:paddingBottom">@dimen/card_text_view_padding_bottom</item>
+        <item name="android:paddingStart">@dimen/card_text_view_padding_start</item>
+        <item name="android:paddingEnd">@dimen/card_text_view_padding_end</item>
+    </style>
+
+    <style name="TextViewStyle.CardTitleStyle">
+        <item name="android:layout_height">@dimen/card_text_view_title_height</item>
+        <item name="android:layout_gravity">top</item>
+        <item name="android:textSize">@dimen/card_text_view_title_text_size</item>
+        <item name="android:textColor">@color/text_color</item>
+    </style>
+
+    <style name="TextViewStyle.CardDateStyle">
+        <item name="android:layout_height">@dimen/card_text_view_date_height</item>
+        <item name="android:textSize">@dimen/card_text_view_date_text_size</item>
+        <item name="android:layout_gravity">bottom</item>
     </style>
 
     <style name="TextInputStyle" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
-        <item name="boxBackgroundColor">@color/cyan50</item>
-        <item name="android:background">@color/cyan50</item>
+        <item name="boxBackgroundColor">@color/header_and_background</item>
+        <item name="android:background">@color/header_and_background</item>
     </style>
 
     <style name="EditTextStyle" parent="Widget.AppCompat.EditText">
+        <item name="android:paddingStart">@dimen/edit_text_padding_start</item>
+        <item name="android:paddingEnd">@dimen/edit_text_padding_end</item>
+    </style>
+
+    <style name="EditTextStyle.TitleStyle">
+        <item name="android:textSize">@dimen/note_fragment_title_text_size</item>
+        <item name="android:paddingStart">@dimen/note_fragment_title_padding_start</item>
+        <item name="android:paddingEnd">@dimen/note_fragment_title_padding_end</item>
+    </style>
+
+    <style name="ButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="android:insetTop">@dimen/note_fragment_button_top_margin</item>
+        <item name="backgroundTint">@color/btn_background</item>
+        <item name="android:textColor">@color/text_color</item>
+        <item name="iconTint">@color/icon_tint</item>
+        <item name="android:textSize">@dimen/note_fragment_button_text_size</item>
     </style>
 
 </resources>

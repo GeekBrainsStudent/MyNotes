@@ -1,27 +1,34 @@
 package ru.geekbrains.android.mynotes;
 
+import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.Date;
+import java.util.Objects;
 
 public class NoteFragment extends Fragment {
 
-    private final static String KEY_NOTE = "key_note";
-    private LinearLayout root;
+    private final static String KEY_NOTE = "ru.geekbrains.android.mynotes.key.note";
+    private ConstraintLayout root;
+    private MyNote note;
+    private MaterialButton save;
 
     public static NoteFragment newInstance(MyNote note) {
         NoteFragment fragment = new NoteFragment();
@@ -42,8 +49,8 @@ public class NoteFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        root = (LinearLayout) view;
-        MyNote note = (MyNote) this.getArguments().getSerializable(KEY_NOTE);
+        root = (ConstraintLayout) view;
+        note = (MyNote) this.getArguments().getSerializable(KEY_NOTE);
         if(note != null) {
             setNote(note);
         }
@@ -61,6 +68,7 @@ public class NoteFragment extends Fragment {
         TextInputEditText describeView = root.findViewById(R.id.describe);
         describeView.setText(describe);
     }
+
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {

@@ -3,16 +3,18 @@ package ru.geekbrains.android.mynotes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
+import com.google.android.material.textview.MaterialTextView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.ViewHolder> {
+public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.ViewHolder> implements Serializable {
 
     private ArrayList<MyNote> notes;
     private OnItemClickListener onItemClickListener;
@@ -31,8 +33,8 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         MyNote note = notes.get(position);
-        holder.getTitle().setText(note.getTitle());
-        holder.getTitleLayout().setHelperText("Created at: " + note.getCreate_at());
+        holder.getTitleView().setText(note.getTitle());
+        holder.getDateView().setText("Created at: " + note.getCreate_at());
     }
 
     @Override
@@ -46,26 +48,26 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.View
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextInputLayout titleLayout;
-        private TextInputEditText title;
+        private final MaterialTextView titleView;
+        private final MaterialTextView dateView;
 
         public ViewHolder(@NonNull View item) {
             super(item);
-            titleLayout = item.findViewById(R.id.card_text_input_layout);
-            title = item.findViewById(R.id.card_text_input_edit_text);
-            titleLayout.setOnClickListener((view) -> {
+            titleView = item.findViewById(R.id.card_view_title);
+            dateView = item.findViewById(R.id.card_view_date);
+            item.setOnClickListener((view) -> {
                 if(onItemClickListener != null) {
-                    onItemClickListener.onItemClick(view, getAdapterPosition());
+                    onItemClickListener.onItemClick(getAdapterPosition());
                 }
             });
         }
 
-        public TextInputLayout getTitleLayout() { return titleLayout; }
-        public TextInputEditText getTitle() { return title; }
+        public MaterialTextView getTitleView() { return titleView; }
+        public MaterialTextView getDateView() { return dateView; }
     }
 
     @FunctionalInterface
     public interface OnItemClickListener {
-        void onItemClick(View view, int position);
+        void onItemClick(int position);
     }
 }

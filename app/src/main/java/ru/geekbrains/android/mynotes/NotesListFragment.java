@@ -1,9 +1,9 @@
 package ru.geekbrains.android.mynotes;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,26 +17,23 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
-
 import java.util.ArrayList;
-import java.util.Date;
 
 public class NotesListFragment extends Fragment {
 
-    private static final String KEY_NOTES_LIST = "key_notes_list";
+    private static final String KEY_DATA = "key_data";
     private LinearLayout root;
-    private CallBack callBack;
+    private Data data;
+    private NotesListAdapter adapter;
+    private NotesListAdapter.OnItemClickListener onItemClickListener;
 
-    public static NotesListFragment newInstance(ArrayList<MyNote> notes) {
+    public static NotesListFragment newInstance(Data data) {
         NotesListFragment fragment = new NotesListFragment();
         Bundle bundle = new Bundle();
-        bundle.putSerializable(KEY_NOTES_LIST, notes);
+        bundle.putSerializable(KEY_DATA, data);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -44,7 +41,14 @@ public class NotesListFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        callBack = (CallBack) context;
+        onItemClickListener = (NotesListAdapter.OnItemClickListener) context;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        data = (savedInstanceState == null) ?
+                new Data() : (Data) savedInstanceState.getSerializable(KEY_DATA);
     }
 
     @Nullable
@@ -59,25 +63,19 @@ public class NotesListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         root = (LinearLayout) view;
-        ArrayList<MyNote> notes = (ArrayList<MyNote>) this.getArguments().getSerializable(KEY_NOTES_LIST);
-        initRecyclerView(notes);
+        initRecyclerView();
     }
 
-    private void initRecyclerView(ArrayList<MyNote> notes) {
+    private void initRecyclerView() {
         RecyclerView recyclerView = root.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(root.getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        NotesListAdapter adapter = new NotesListAdapter(notes);
+        adapter = new NotesListAdapter(data.getNotes());
         recyclerView.setAdapter(adapter);
-
-        adapter.setOnItemClickListener((v, pos) -> {
-            if(callBack != null) {
-                callBack.onItemClick(pos);
-            }
-        });
+        adapter.setOnItemClickListener(onItemClickListener);
     }
 
     @Override
@@ -99,12 +97,14 @@ public class NotesListFragment extends Fragment {
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(KEY_DATA, data);
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
-        callBack = null;
-    }
-    public interface CallBack {
-        void onItemClick(int pos);
-
+        onItemClickListener = null;
     }
 }

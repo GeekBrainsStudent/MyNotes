@@ -1,21 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView
-    style="@style/CardViewStyle"
-    android:id="@+id/card_view"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/card_view"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="@dimen/card_height">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/card_text_input_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/card_view_title"
+        style="@style/TextViewStyle.CardTitleStyle" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/card_text_input_edit_text"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/card_view_date"
+        style="@style/TextViewStyle.CardDateStyle" />
 
-    </com.google.android.material.textfield.TextInputLayout>
 
 </com.google.android.material.card.MaterialCardView>
