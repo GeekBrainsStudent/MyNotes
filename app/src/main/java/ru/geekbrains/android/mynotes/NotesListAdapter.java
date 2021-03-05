@@ -17,11 +17,14 @@ import java.util.ArrayList;
 
 public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.ViewHolder> implements Serializable {
 
-    private ArrayList<MyNote> notes;
+    private final ArrayList<MyNote> notes;
     private OnItemClickListener onItemClickListener;
+    private final Fragment fragment;
+    private int itemPosition;
 
-    public NotesListAdapter(ArrayList<MyNote> notes) {
+    public NotesListAdapter(ArrayList<MyNote> notes, Fragment fragment) {
         this.notes = notes;
+        this.fragment = fragment;
     }
 
     @NonNull
@@ -61,6 +64,15 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.View
                     onItemClickListener.onItemClick(getAdapterPosition());
                 }
             });
+
+            if(fragment != null) {
+                fragment.registerForContextMenu(item);
+            }
+            item.setOnLongClickListener((v) -> {
+                itemPosition = getLayoutPosition();
+                item.showContextMenu();
+                return true;
+            });
         }
 
         public MaterialTextView getTitleView() { return titleView; }
@@ -71,4 +83,6 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.View
     public interface OnItemClickListener {
         void onItemClick(int position);
     }
+
+    public int getItemPosition() { return itemPosition; }
 }

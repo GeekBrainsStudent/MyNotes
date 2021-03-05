@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -79,7 +80,7 @@ public class NotesListFragment extends Fragment implements NoteAddFragment.AddNo
         LinearLayoutManager layoutManager = new LinearLayoutManager(root.getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        adapter = new NotesListAdapter(data.getNotes());
+        adapter = new NotesListAdapter(data.getNotes(), this);
         recyclerView.setAdapter(adapter);
         adapter.setOnItemClickListener(onItemClickListener);
     }
@@ -100,6 +101,26 @@ public class NotesListFragment extends Fragment implements NoteAddFragment.AddNo
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = requireActivity().getMenuInflater();
+        inflater.inflate(R.menu.context_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.delete:
+                int pos = adapter.getItemPosition();
+                data.delete(pos);
+                adapter.notifyItemRemoved(pos);
+                break;
+            default: break;
+        }
+        return super.onContextItemSelected(item);
     }
 
     @Override

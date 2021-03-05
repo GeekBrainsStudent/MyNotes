@@ -12,6 +12,7 @@
     <string name="menu_share_title">share</string>
     <string name="menu_add_image_title">add image</string>
     <string name="menu_add_new_note">new note</string>
+    <string name="menu_del_note">delete</string>
 
 <!--    note fragment-->
     <string name="note_fragment_btn_save_title">save</string>

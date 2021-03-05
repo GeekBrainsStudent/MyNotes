@@ -27,9 +27,18 @@ public class Data implements Serializable {
     }
 
     public int insert(MyNote note) {
-        this.notes.add(note);
-        int id = this.notes.lastIndexOf(note);
+        notes.add(note);
+        int id = notes.lastIndexOf(note);
         note.setId(id);
         return id;
+    }
+
+    public void delete(int pos) {
+        notes.remove(pos);
+        if(notes.size() >= (pos + 1)) {  // если остались элементы после удаленного
+            for(int i = pos; i < notes.size(); i++) {
+                notes.get(i).setId(i);  // Обновляем их Id
+            }
+        }
     }
 }
