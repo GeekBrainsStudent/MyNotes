@@ -22,10 +22,12 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 public class MainActivity extends AppCompatActivity implements
-        NotesListAdapter.OnItemClickListener {
+        NotesListAdapter.OnItemClickListener,
+        NoteAddFragment.AddNote {
 
     private static final String TAG_LIST = "ru.geekbrains.android.mymotes.tag.list";
     private static final String TAG_NOTE = "ru.geekbrains.android.mymotes.tag.note";
+    private static final String TAG_NOTE_ADD = "ru.geekbrains.android.mymotes.tag.note.add";
 
     private final String APP_PREFERENCES = "ru.geekbrains.android.mymotes.settings";
     private final String APP_PREFERENCES_DARK_MODE = "ru.geekbrains.android.mymotes.settings.dark_mode";
@@ -161,6 +163,13 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         boolean res = super.onOptionsItemSelected(item);
         switch (item.getItemId()) {
+            case R.id.add_note:
+                int fragContainer = (isLandscape) ? R.id.fragment_content : R.id.fragment_list;
+                getSupportFragmentManager().beginTransaction()
+                        .add(fragContainer, new NoteAddFragment(), TAG_NOTE_ADD)
+                        .addToBackStack(null)
+                        .commit();
+                break;
             default:
                 break;
         }
@@ -175,11 +184,42 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onItemClick(int pos) {
+        Log.d("TAG", "data.getNotes().size() = " + data.getNotes().size());
+        Log.d("TAG", "pos = " + pos);
+        for(int i = 0; i < data.getNotes().size(); i++) {
+            Log.d("TAG", "notes(" + i + ") = " + data.getNotes().get(i));
+        }
         FragmentManager fm = getSupportFragmentManager();
         int fragmentContainer = (isLandscape) ? R.id.fragment_content : R.id.fragment_list;
         fm.beginTransaction()
                 .replace(fragmentContainer, NoteFragment.newInstance(data.getNote(pos)), TAG_NOTE)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    @Override
+    public void add(MyNote newNote) {
+        FragmentManager fm = getSupportFragmentManager();
+
+        NoteAddFragment noteAddFragment = (NoteAddFragment) fm.findFragmentByTag(TAG_NOTE_ADD);
+        if(noteAddFragment == null)
+            return;
+        fm.beginTransaction().remove(noteAddFragment).commit();
+
+        NotesListFragment notesListFragment = (NotesListFragment) fm.findFragmentByTag(TAG_LIST);
+        if(notesListFragment == null)
+            return;
+        notesListFragment.add(newNote);
+    }
+
+    @Override
+    public void cancel() {
+        if(data.getNotes().size() == 0)
+            return;
+        FragmentManager fm = getSupportFragmentManager();
+        NoteAddFragment noteAddFragment = (NoteAddFragment) fm.findFragmentByTag(TAG_NOTE_ADD);
+        if(noteAddFragment == null)
+            return;
+        fm.beginTransaction().remove(noteAddFragment).commit();
     }
 }

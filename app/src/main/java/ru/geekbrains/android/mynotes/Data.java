@@ -1,7 +1,5 @@
 package ru.geekbrains.android.mynotes;
 
-import android.util.Log;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -9,7 +7,7 @@ public class Data implements Serializable {
 
     private final ArrayList<MyNote> notes;
 
-    public Data() { notes = new ArrayList<>(); initData();}
+    public Data() { notes = new ArrayList<>(); }
 
     public Data(ArrayList<MyNote> data) {
         this.notes = data;
@@ -33,11 +31,5 @@ public class Data implements Serializable {
         int id = this.notes.lastIndexOf(note);
         note.setId(id);
         return id;
-    }
-
-    private void initData() {
-        for(int i = 0; i < 10; i++) {
-            insert(new MyNote("title" + i, "describe" + i));
-        }
     }
 }

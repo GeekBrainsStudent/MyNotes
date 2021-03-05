@@ -22,11 +22,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class NotesListFragment extends Fragment {
+public class NotesListFragment extends Fragment implements NoteAddFragment.AddNote {
 
     private static final String KEY_DATA = "key_data";
     private LinearLayout root;
     private Data data;
+    private RecyclerView recyclerView;
     private NotesListAdapter adapter;
     private NotesListAdapter.OnItemClickListener onItemClickListener;
 
@@ -47,8 +48,13 @@ public class NotesListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        data = (savedInstanceState == null) ?
-                new Data() : (Data) savedInstanceState.getSerializable(KEY_DATA);
+        Bundle args = getArguments();
+        if(args == null) {
+            data = (savedInstanceState == null) ?
+                    new Data() : (Data) savedInstanceState.getSerializable(KEY_DATA);
+        } else {
+            data = (Data) getArguments().getSerializable(KEY_DATA);
+        }
     }
 
     @Nullable
@@ -67,7 +73,7 @@ public class NotesListFragment extends Fragment {
     }
 
     private void initRecyclerView() {
-        RecyclerView recyclerView = root.findViewById(R.id.recycler_view);
+        recyclerView = root.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(root.getContext());
@@ -106,5 +112,12 @@ public class NotesListFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         onItemClickListener = null;
+    }
+
+    @Override
+    public void add(MyNote newNote) {
+        int pos = data.insert(newNote);
+        adapter.notifyItemInserted(pos);
+        recyclerView.scrollToPosition(pos);
     }
 }
