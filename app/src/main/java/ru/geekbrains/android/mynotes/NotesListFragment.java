@@ -1,11 +1,12 @@
 package ru.geekbrains.android.mynotes;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,26 +18,26 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
-
 import java.util.ArrayList;
-import java.util.Date;
 
-public class NotesListFragment extends Fragment {
+public class NotesListFragment extends Fragment implements
+        NoteAddFragment.AddNote,
+        NoteFragment.SaveEditNote {
 
-    private static final String KEY_NOTES_LIST = "key_notes_list";
+    private static final String KEY_DATA = "key_data";
     private LinearLayout root;
-    private CallBack callBack;
+    private Data data;
+    private RecyclerView recyclerView;
+    private NotesListAdapter adapter;
+    private NotesListAdapter.OnItemClickListener onItemClickListener;
 
-    public static NotesListFragment newInstance(ArrayList<MyNote> notes) {
+    public static NotesListFragment newInstance(Data data) {
         NotesListFragment fragment = new NotesListFragment();
         Bundle bundle = new Bundle();
-        bundle.putSerializable(KEY_NOTES_LIST, notes);
+        bundle.putSerializable(KEY_DATA, data);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -44,7 +45,19 @@ public class NotesListFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        callBack = (CallBack) context;
+        onItemClickListener = (NotesListAdapter.OnItemClickListener) context;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle args = getArguments();
+        if(args == null) {
+            data = (savedInstanceState == null) ?
+                    new Data() : (Data) savedInstanceState.getSerializable(KEY_DATA);
+        } else {
+            data = (Data) getArguments().getSerializable(KEY_DATA);
+        }
     }
 
     @Nullable
@@ -59,25 +72,19 @@ public class NotesListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         root = (LinearLayout) view;
-        ArrayList<MyNote> notes = (ArrayList<MyNote>) this.getArguments().getSerializable(KEY_NOTES_LIST);
-        initRecyclerView(notes);
+        initRecyclerView();
     }
 
-    private void initRecyclerView(ArrayList<MyNote> notes) {
-        RecyclerView recyclerView = root.findViewById(R.id.recycler_view);
+    private void initRecyclerView() {
+        recyclerView = root.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(root.getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        NotesListAdapter adapter = new NotesListAdapter(notes);
+        adapter = new NotesListAdapter(data.getNotes(), this);
         recyclerView.setAdapter(adapter);
-
-        adapter.setOnItemClickListener((v, pos) -> {
-            if(callBack != null) {
-                callBack.onItemClick(pos);
-            }
-        });
+        adapter.setOnItemClickListener(onItemClickListener);
     }
 
     @Override
@@ -99,12 +106,49 @@ public class NotesListFragment extends Fragment {
     }
 
     @Override
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = requireActivity().getMenuInflater();
+        inflater.inflate(R.menu.context_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.delete:
+                int pos = adapter.getItemPosition();
+                data.delete(pos);
+                adapter.notifyItemRemoved(pos);
+                break;
+            default: break;
+        }
+        return super.onContextItemSelected(item);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(KEY_DATA, data);
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
-        callBack = null;
+        onItemClickListener = null;
     }
-    public interface CallBack {
-        void onItemClick(int pos);
 
+    @Override
+    public void add(MyNote newNote) {
+        int pos = data.insert(newNote);
+        adapter.notifyItemInserted(pos);
+        recyclerView.scrollToPosition(pos);
+    }
+
+    @Override
+    public void save(MyNote updatedNote) {
+        data.update(updatedNote);
+        int pos = updatedNote.getId();
+        adapter.notifyItemChanged(pos);
+        recyclerView.scrollToPosition(pos);
     }
 }

@@ -1,9 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <dimen name="titleTextSize">25sp</dimen>
-    <dimen name="describeTextSize">20sp</dimen>
+<!--    Fragment root padding-->
+    <dimen name="fragment_root_padding_top">4dp</dimen>
+    <dimen name="fragment_root_padding_bottom">4dp</dimen>
+    <dimen name="fragment_root_padding_start">8dp</dimen>
+    <dimen name="fragment_root_padding_end">8dp</dimen>
 
-    <dimen name="rootFragmentPadding">16dp</dimen>
+<!--    card view-->
+    <dimen name="card_height">68dp</dimen>
+    <dimen name="card_corner_radius">5dp</dimen>
+    <dimen name="card_text_view_title_height">30dp</dimen>
+    <dimen name="card_text_view_padding_top">4dp</dimen>
+    <dimen name="card_text_view_padding_bottom">4dp</dimen>
+    <dimen name="card_text_view_padding_start">8dp</dimen>
+    <dimen name="card_text_view_padding_end">8dp</dimen>
+    <dimen name="card_text_view_date_height">20dp</dimen>
+    <dimen name="card_text_view_title_text_size">18sp</dimen>
+    <dimen name="card_text_view_date_text_size">10sp</dimen>
 
+<!--    Navigation-->
+    <dimen name="nav_header_margin">4dp</dimen>
+
+<!--    TextInputEditText-->
+    <dimen name="edit_text_padding_start">4dp</dimen>
+    <dimen name="edit_text_padding_end">4dp</dimen>
+
+<!--    NoteFragment-->
+    <dimen name="note_fragment_title_text_size">25sp</dimen>
+    <dimen name="note_fragment_title_padding_start">15dp</dimen>
+    <dimen name="note_fragment_title_padding_end">15dp</dimen>
+    <dimen name="note_fragment_button_top_margin">32dp</dimen>
+    <dimen name="note_fragment_button_width">110dp</dimen>
+    <dimen name="note_fragment_button_text_size">10sp</dimen>
 </resources>

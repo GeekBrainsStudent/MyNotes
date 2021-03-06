@@ -9,51 +9,97 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.CompoundButton;
 
-import com.google.android.material.checkbox.MaterialCheckBox;
-import com.google.android.material.internal.NavigationMenuItemView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
-import java.util.ArrayList;
+public class MainActivity extends AppCompatActivity implements
+        NotesListAdapter.OnItemClickListener,
+        NoteAddFragment.AddNote,
+        NoteFragment.SaveEditNote {
 
-public class MainActivity extends AppCompatActivity implements NotesListFragment.CallBack {
+    private static final String TAG_LIST = "ru.geekbrains.android.mymotes.tag.list";
+    private static final String TAG_NOTE = "ru.geekbrains.android.mymotes.tag.note";
+    private static final String TAG_NOTE_ADD = "ru.geekbrains.android.mymotes.tag.note.add";
 
-    ArrayList<MyNote> notes = new Data().getData();
+    private final String APP_PREFERENCES = "ru.geekbrains.android.mymotes.settings";
+    private final String APP_PREFERENCES_DARK_MODE = "ru.geekbrains.android.mymotes.settings.dark_mode";
+    private final String KEY_DATA = "ru.geekbrains.android.mymotes.key.data";
+
+    private Data data;
+    private SharedPreferences pref;
+    private boolean isLandscape;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        data = (savedInstanceState != null) ? (Data) savedInstanceState.getSerializable(KEY_DATA) : new Data();
+        isLandscape = (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
+
+        pref = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE);
+        checkDarkMode();
+
         Toolbar toolbar = initToolBar();
         initDrawer(toolbar);
-        setListenersNavigationMenu();
 
-        setFragments(notes);
+        setNotesListFragment();
+        setListenersNavigationMenu();
+        setListenersDarkSwitch();
     }
 
-    private void setFragments(ArrayList<MyNote> notes) {
+    private void checkDarkMode() {
+        SwitchMaterial darkSwitch = (SwitchMaterial) ((NavigationView) findViewById(R.id.nav_view))
+                .getMenu()
+                .findItem(R.id.dark_mode)
+                .getActionView()
+                .findViewById(R.id.dark_mode_switch);
+
+        if(pref.contains(APP_PREFERENCES_DARK_MODE)) {
+            boolean toggle = pref.getBoolean(APP_PREFERENCES_DARK_MODE, false);
+            int mode = (toggle) ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO;
+            AppCompatDelegate.setDefaultNightMode(mode);
+            darkSwitch.setChecked(toggle);
+        }
+    }
+
+    private Toolbar initToolBar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        return toolbar;
+    }
+
+    private void initDrawer(Toolbar toolbar) {
+        final DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,R.string.navigation_drawer_open,R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+    }
+
+    private void setNotesListFragment() {
 
         FragmentManager fm = getSupportFragmentManager();
-        boolean isLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+
 
         Fragment fragment = fm.findFragmentById(R.id.fragment_list);
         if(fragment == null) {
             fm.beginTransaction()
-                    .replace(R.id.fragment_list, NotesListFragment.newInstance(notes))
+                    .replace(R.id.fragment_list, NotesListFragment.newInstance(data), TAG_LIST)
                     .commit();
         } else if(isLandscape) {
-            if(fragment instanceof NoteFragment) {
+            if(!fragment.getTag().equals(TAG_LIST)) {
                 fm.beginTransaction()
                         .remove(fragment)
-                        .replace(R.id.fragment_list, NotesListFragment.newInstance(notes))
+                        .replace(R.id.fragment_list, NotesListFragment.newInstance(data), TAG_LIST)
                         .commit();
             }
         }
@@ -69,39 +115,12 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
 
         } else {
             if(fragment == null) {
+                Fragment frag = NoteFragment.newInstance((data.size() == 0) ? null : data.getNote(0));
                 fm.beginTransaction()
-                        .replace(R.id.fragment_content, NoteFragment.newInstance(notes.get(0)))
+                        .replace(R.id.fragment_content, frag, TAG_NOTE)
                         .commit();
             }
-
         }
-    }
-
-    private void initDrawer(Toolbar toolbar) {
-        final DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,R.string.navigation_drawer_open,R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-    }
-
-    private void setListenersDarkMode() {
-        SwitchMaterial switchDarkMode = (SwitchMaterial) findViewById(R.id.dark_mode_switch);
-        switchDarkMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                int mode = (b) ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO;
-                AppCompatDelegate.setDefaultNightMode(mode);
-            }
-        });
-
-        MaterialCheckBox systemCheckBox = (MaterialCheckBox) findViewById(R.id.system_mode_checkbox);
-        systemCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                int mode = (b) ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO;
-                AppCompatDelegate.setDefaultNightMode(mode);
-            }
-        });
     }
 
     private void setListenersNavigationMenu() {
@@ -110,15 +129,6 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch(item.getItemId()) {
-                    case R.id.system_mode:
-                        MaterialCheckBox systemMode = (MaterialCheckBox) item.getActionView().findViewById(R.id.system_mode_checkbox);
-                        systemMode.toggle();
-                        NavigationMenuItemView customDarkMode = findViewById(R.id.dark_mode);
-                        if(systemMode.isChecked())
-                            customDarkMode.setVisibility(View.INVISIBLE);
-                        else
-                            customDarkMode.setVisibility(View.VISIBLE);
-                        return false;
                     case R.id.dark_mode:
                         SwitchMaterial darkSwitch = (SwitchMaterial) item.getActionView().findViewById(R.id.dark_mode_switch);
                         darkSwitch.toggle();
@@ -130,26 +140,99 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
         });
     }
 
+    private void setListenersDarkSwitch() {
+        NavigationView navView = findViewById(R.id.nav_view);
+        SwitchMaterial switchDarkMode = (SwitchMaterial) navView.getMenu().findItem(R.id.dark_mode).getActionView().findViewById(R.id.dark_mode_switch);
+        switchDarkMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                int mode = (b) ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO;
+                pref.edit().putBoolean(APP_PREFERENCES_DARK_MODE, b).apply();
+                AppCompatDelegate.setDefaultNightMode(mode);
+            }
+        });
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
 
-    private Toolbar initToolBar() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
-         setSupportActionBar(toolbar);
-        return toolbar;
+    @SuppressLint("NonConstantResourceId")
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        boolean res = super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case R.id.add_note:
+                int fragContainer = (isLandscape) ? R.id.fragment_content : R.id.fragment_list;
+                getSupportFragmentManager().beginTransaction()
+                        .add(fragContainer, new NoteAddFragment(), TAG_NOTE_ADD)
+                        .addToBackStack(null)
+                        .commit();
+                break;
+            default:
+                break;
+        }
+        return res;
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(KEY_DATA, data);
     }
 
     @Override
     public void onItemClick(int pos) {
+        Log.d("TAG", "data.getNotes().size() = " + data.getNotes().size());
+        Log.d("TAG", "pos = " + pos);
+        for(int i = 0; i < data.getNotes().size(); i++) {
+            Log.d("TAG", "notes(" + i + ") = " + data.getNotes().get(i));
+        }
         FragmentManager fm = getSupportFragmentManager();
-        boolean isLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
         int fragmentContainer = (isLandscape) ? R.id.fragment_content : R.id.fragment_list;
         fm.beginTransaction()
-                .replace(fragmentContainer, NoteFragment.newInstance(notes.get(pos)))
+                .replace(fragmentContainer, NoteFragment.newInstance(data.getNote(pos)), TAG_NOTE)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    @Override
+    public void add(MyNote newNote) {
+        FragmentManager fm = getSupportFragmentManager();
+
+        NoteAddFragment noteAddFragment = (NoteAddFragment) fm.findFragmentByTag(TAG_NOTE_ADD);
+        if(noteAddFragment == null)
+            return;
+        fm.beginTransaction().remove(noteAddFragment).commit();
+
+        NotesListFragment notesListFragment = (NotesListFragment) fm.findFragmentByTag(TAG_LIST);
+        if(notesListFragment == null)
+            return;
+        notesListFragment.add(newNote);
+    }
+
+    @Override
+    public void cancel() {
+        if(data.getNotes().size() == 0)
+            return;
+        FragmentManager fm = getSupportFragmentManager();
+        NoteAddFragment noteAddFragment = (NoteAddFragment) fm.findFragmentByTag(TAG_NOTE_ADD);
+        if(noteAddFragment == null)
+            return;
+        fm.beginTransaction().remove(noteAddFragment).commit();
+    }
+
+    @Override
+    public void save(MyNote updatedNote) {
+        FragmentManager fm = getSupportFragmentManager();
+        NotesListFragment notesListFragment = (NotesListFragment) fm.findFragmentByTag(TAG_LIST);
+        if(notesListFragment == null)
+            return;
+        notesListFragment.save(updatedNote);
+        if(!isLandscape) {
+            fm.beginTransaction().replace(R.id.fragment_list, NotesListFragment.newInstance(data)).commit();
+        }
     }
 }

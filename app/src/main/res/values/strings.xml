@@ -1,5 +1,20 @@
 <resources>
     <string name="app_name">MyNotes</string>
+
+    <!--    Navigation -->
+    <string name="nav_header_title">MyNotes \nver. 1.0.0</string>
     <string name="navigation_drawer_open">open</string>
     <string name="navigation_drawer_close">close</string>
+
+<!--    menu titles-->
+    <string name="menu_search_title">search</string>
+    <string name="menu_sort_title">sort</string>
+    <string name="menu_share_title">share</string>
+    <string name="menu_add_image_title">add image</string>
+    <string name="menu_add_new_note">new note</string>
+    <string name="menu_del_note">delete</string>
+
+<!--    note fragment-->
+    <string name="note_fragment_btn_save_title">save</string>
+    <string name="note_fragment_btn_cancel_title">cancel</string>
 </resources>
