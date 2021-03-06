@@ -41,4 +41,8 @@ public class Data implements Serializable {
             }
         }
     }
+
+    public int size() {
+        return notes.size();
+    }
 }

@@ -3,6 +3,7 @@ package ru.geekbrains.android.mynotes;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,7 +29,7 @@ public class NoteFragment extends Fragment {
     private final static String KEY_NOTE = "ru.geekbrains.android.mynotes.key.note";
     private ConstraintLayout root;
     private MyNote note;
-    private MaterialButton save;
+    private SaveEditNote saveEditNote;
 
     public static NoteFragment newInstance(MyNote note) {
         NoteFragment fragment = new NoteFragment();
@@ -36,6 +37,12 @@ public class NoteFragment extends Fragment {
         bundle.putSerializable(KEY_NOTE, note);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        saveEditNote = (SaveEditNote) context;
     }
 
     @Nullable
@@ -54,6 +61,10 @@ public class NoteFragment extends Fragment {
         if(note != null) {
             setNote(note);
         }
+        MaterialButton save = root.findViewById(R.id.note_edit_save);
+        save.setOnClickListener((v) -> {
+            saveClick();
+        });
     }
 
     public void setNote(MyNote note) {
@@ -69,6 +80,15 @@ public class NoteFragment extends Fragment {
         describeView.setText(describe);
     }
 
+    private void saveClick() {
+        Editable editable = ((TextInputEditText) root.findViewById(R.id.title)).getText();
+        String title = (editable == null) ? "" : editable.toString();
+        editable = ((TextInputEditText) root.findViewById(R.id.describe)).getText();
+        String describe = (editable == null) ? "" : editable.toString();
+        MyNote updatedNote = new MyNote(title, describe);
+        updatedNote.setId(note.getId());
+        saveEditNote.save(updatedNote);
+    }
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
@@ -85,5 +105,16 @@ public class NoteFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        saveEditNote = null;
+    }
+
+    @FunctionalInterface
+    public interface SaveEditNote {
+        void save(MyNote updatedNote);
     }
 }

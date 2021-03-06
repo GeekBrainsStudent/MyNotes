@@ -23,7 +23,8 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 
 public class MainActivity extends AppCompatActivity implements
         NotesListAdapter.OnItemClickListener,
-        NoteAddFragment.AddNote {
+        NoteAddFragment.AddNote,
+        NoteFragment.SaveEditNote {
 
     private static final String TAG_LIST = "ru.geekbrains.android.mymotes.tag.list";
     private static final String TAG_NOTE = "ru.geekbrains.android.mymotes.tag.note";
@@ -114,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements
 
         } else {
             if(fragment == null) {
-                Fragment frag = NoteFragment.newInstance(data.getNotes().get(0));
+                Fragment frag = NoteFragment.newInstance((data.size() == 0) ? null : data.getNote(0));
                 fm.beginTransaction()
                         .replace(R.id.fragment_content, frag, TAG_NOTE)
                         .commit();
@@ -221,5 +222,17 @@ public class MainActivity extends AppCompatActivity implements
         if(noteAddFragment == null)
             return;
         fm.beginTransaction().remove(noteAddFragment).commit();
+    }
+
+    @Override
+    public void save(MyNote updatedNote) {
+        FragmentManager fm = getSupportFragmentManager();
+        NotesListFragment notesListFragment = (NotesListFragment) fm.findFragmentByTag(TAG_LIST);
+        if(notesListFragment == null)
+            return;
+        notesListFragment.save(updatedNote);
+        if(!isLandscape) {
+            fm.beginTransaction().replace(R.id.fragment_list, NotesListFragment.newInstance(data)).commit();
+        }
     }
 }

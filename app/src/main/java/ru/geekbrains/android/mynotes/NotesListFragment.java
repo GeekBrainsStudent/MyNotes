@@ -23,7 +23,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class NotesListFragment extends Fragment implements NoteAddFragment.AddNote {
+public class NotesListFragment extends Fragment implements
+        NoteAddFragment.AddNote,
+        NoteFragment.SaveEditNote {
 
     private static final String KEY_DATA = "key_data";
     private LinearLayout root;
@@ -139,6 +141,14 @@ public class NotesListFragment extends Fragment implements NoteAddFragment.AddNo
     public void add(MyNote newNote) {
         int pos = data.insert(newNote);
         adapter.notifyItemInserted(pos);
+        recyclerView.scrollToPosition(pos);
+    }
+
+    @Override
+    public void save(MyNote updatedNote) {
+        data.update(updatedNote);
+        int pos = updatedNote.getId();
+        adapter.notifyItemChanged(pos);
         recyclerView.scrollToPosition(pos);
     }
 }
