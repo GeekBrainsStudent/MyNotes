@@ -1,11 +1,18 @@
 package ru.geekbrains.android.mynotes;
 
+import android.util.Log;
+
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Data implements Serializable {
 
+    private final String COLLECTION_NAME = "Notes";
     private final ArrayList<MyNote> notes;
+    private final FirebaseFirestore fireStore = FirebaseFirestore.getInstance();
 
     public Data() { notes = new ArrayList<>(); }
 
@@ -19,30 +26,13 @@ public class Data implements Serializable {
 
     public MyNote getNote(int pos) {return notes.get(pos); }
 
-    public void update(MyNote note) {
-        int pos = note.getId();
-        MyNote updatedNote = notes.get(pos);
-        updatedNote.setTitle(note.getTitle());
-        updatedNote.setDescribe(note.getDescribe());
-    }
+    public void insert(MyNote note) { notes.add(note); }
 
-    public int insert(MyNote note) {
-        notes.add(note);
-        int id = notes.lastIndexOf(note);
-        note.setId(id);
-        return id;
-    }
-
-    public void delete(int pos) {
-        notes.remove(pos);
-        if(notes.size() >= (pos + 1)) {  // если остались элементы после удаленного
-            for(int i = pos; i < notes.size(); i++) {
-                notes.get(i).setId(i);  // Обновляем их Id
-            }
-        }
-    }
+    public void delete(int pos) { notes.remove(pos); }
 
     public int size() {
         return notes.size();
     }
+
+    public int getPosition(MyNote note) { return notes.indexOf(note); }
 }

@@ -2,10 +2,7 @@ package ru.geekbrains.android.mynotes;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,8 +17,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.ArrayList;
 
 public class NotesListFragment extends Fragment implements
         NoteAddFragment.AddNote,
@@ -139,15 +134,15 @@ public class NotesListFragment extends Fragment implements
 
     @Override
     public void add(MyNote newNote) {
-        int pos = data.insert(newNote);
+        data.insert(newNote);
+        int pos = data.getPosition(newNote);
         adapter.notifyItemInserted(pos);
         recyclerView.scrollToPosition(pos);
     }
 
     @Override
     public void save(MyNote updatedNote) {
-        data.update(updatedNote);
-        int pos = updatedNote.getId();
+        int pos = data.getPosition(updatedNote);
         adapter.notifyItemChanged(pos);
         recyclerView.scrollToPosition(pos);
     }

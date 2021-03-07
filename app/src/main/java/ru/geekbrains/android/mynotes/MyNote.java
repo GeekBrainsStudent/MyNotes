@@ -5,7 +5,6 @@ import java.util.Date;
 
 public class MyNote implements Serializable {
 
-    private Integer id;
     private String title;
     private String describe;
     private final Date create_at;
@@ -15,10 +14,6 @@ public class MyNote implements Serializable {
         this.describe = describe;
         create_at = new Date();
     }
-
-    public Integer getId() { return id; }
-
-    public void setId(int id) { this.id = id; }
 
     public String getTitle() {
         return title;

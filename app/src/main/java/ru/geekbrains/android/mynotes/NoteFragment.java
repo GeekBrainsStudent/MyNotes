@@ -1,10 +1,8 @@
 package ru.geekbrains.android.mynotes;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.Editable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,7 +20,6 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.Date;
-import java.util.Objects;
 
 public class NoteFragment extends Fragment {
 
@@ -85,9 +82,9 @@ public class NoteFragment extends Fragment {
         String title = (editable == null) ? "" : editable.toString();
         editable = ((TextInputEditText) root.findViewById(R.id.describe)).getText();
         String describe = (editable == null) ? "" : editable.toString();
-        MyNote updatedNote = new MyNote(title, describe);
-        updatedNote.setId(note.getId());
-        saveEditNote.save(updatedNote);
+        note.setTitle(title);
+        note.setDescribe(describe);
+        saveEditNote.save(note);
     }
 
     @Override
