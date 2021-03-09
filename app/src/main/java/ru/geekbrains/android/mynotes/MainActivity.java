@@ -13,7 +13,6 @@ import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.CompoundButton;
@@ -52,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements
         Toolbar toolbar = initToolBar();
         initDrawer(toolbar);
 
-        setNotesListFragment();
+        setFragments();
         setListenersNavigationMenu();
         setListenersDarkSwitch();
     }
@@ -85,10 +84,9 @@ public class MainActivity extends AppCompatActivity implements
         toggle.syncState();
     }
 
-    private void setNotesListFragment() {
+    private void setFragments() {
 
         FragmentManager fm = getSupportFragmentManager();
-
 
         Fragment fragment = fm.findFragmentById(R.id.fragment_list);
         if(fragment == null) {
@@ -185,11 +183,6 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onItemClick(int pos) {
-        Log.d("TAG", "data.getNotes().size() = " + data.getNotes().size());
-        Log.d("TAG", "pos = " + pos);
-        for(int i = 0; i < data.getNotes().size(); i++) {
-            Log.d("TAG", "notes(" + i + ") = " + data.getNotes().get(i));
-        }
         FragmentManager fm = getSupportFragmentManager();
         int fragmentContainer = (isLandscape) ? R.id.fragment_content : R.id.fragment_list;
         fm.beginTransaction()
@@ -232,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements
             return;
         notesListFragment.save(updatedNote);
         if(!isLandscape) {
-            fm.beginTransaction().replace(R.id.fragment_list, NotesListFragment.newInstance(data)).commit();
+            fm.beginTransaction().replace(R.id.fragment_list, NotesListFragment.newInstance(data), TAG_LIST).commit();
         }
     }
 }

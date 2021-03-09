@@ -2,8 +2,6 @@ package ru.geekbrains.android.mynotes;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -21,11 +19,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
-
 public class NotesListFragment extends Fragment implements
         NoteAddFragment.AddNote,
-        NoteFragment.SaveEditNote {
+        NoteFragment.SaveEditNote,
+        Data.NotifyDataChanged {
 
     private static final String KEY_DATA = "key_data";
     private LinearLayout root;
@@ -37,6 +34,7 @@ public class NotesListFragment extends Fragment implements
     public static NotesListFragment newInstance(Data data) {
         NotesListFragment fragment = new NotesListFragment();
         Bundle bundle = new Bundle();
+        data.setNotifyDataChanged(fragment);
         bundle.putSerializable(KEY_DATA, data);
         fragment.setArguments(bundle);
         return fragment;
@@ -118,7 +116,6 @@ public class NotesListFragment extends Fragment implements
             case R.id.delete:
                 int pos = adapter.getItemPosition();
                 data.delete(pos);
-                adapter.notifyItemRemoved(pos);
                 break;
             default: break;
         }
@@ -139,16 +136,33 @@ public class NotesListFragment extends Fragment implements
 
     @Override
     public void add(MyNote newNote) {
-        int pos = data.insert(newNote);
-        adapter.notifyItemInserted(pos);
-        recyclerView.scrollToPosition(pos);
+        data.insert(newNote);
     }
 
     @Override
     public void save(MyNote updatedNote) {
         data.update(updatedNote);
-        int pos = updatedNote.getId();
+    }
+
+    @Override
+    public void dataChanged() {
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void rowInserted(int pos) {
+        adapter.notifyItemInserted(pos);
+        recyclerView.scrollToPosition(pos);
+    }
+
+    @Override
+    public void rowUpdated(int pos) {
         adapter.notifyItemChanged(pos);
         recyclerView.scrollToPosition(pos);
+    }
+
+    @Override
+    public void rowDeleted(int pos) {
+        adapter.notifyItemRemoved(pos);
     }
 }
