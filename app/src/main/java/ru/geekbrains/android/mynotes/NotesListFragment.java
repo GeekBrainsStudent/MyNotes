@@ -20,7 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class NotesListFragment extends Fragment implements
         NoteAddFragment.AddNote,
-        NoteFragment.SaveEditNote {
+        NoteFragment.SaveEditNote,
+        Data.NotifyDataChanged {
 
     private static final String KEY_DATA = "key_data";
     private LinearLayout root;
@@ -32,6 +33,7 @@ public class NotesListFragment extends Fragment implements
     public static NotesListFragment newInstance(Data data) {
         NotesListFragment fragment = new NotesListFragment();
         Bundle bundle = new Bundle();
+        data.setNotifyDataChanged(fragment);
         bundle.putSerializable(KEY_DATA, data);
         fragment.setArguments(bundle);
         return fragment;
@@ -145,5 +147,10 @@ public class NotesListFragment extends Fragment implements
         int pos = data.getPosition(updatedNote);
         adapter.notifyItemChanged(pos);
         recyclerView.scrollToPosition(pos);
+    }
+
+    @Override
+    public void dataChanged() {
+        adapter.notifyDataSetChanged();
     }
 }

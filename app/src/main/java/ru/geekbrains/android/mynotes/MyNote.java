@@ -15,6 +15,12 @@ public class MyNote implements Serializable {
         create_at = new Date();
     }
 
+    public MyNote(String title, String describe, Date create_at) {
+        this.title = title;
+        this.describe = describe;
+        this.create_at = create_at;
+    }
+
     public String getTitle() {
         return title;
     }
