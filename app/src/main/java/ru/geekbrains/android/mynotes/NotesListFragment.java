@@ -137,9 +137,6 @@ public class NotesListFragment extends Fragment implements
     @Override
     public void add(MyNote newNote) {
         data.insert(newNote);
-        int pos = data.getPosition(newNote);
-        adapter.notifyItemInserted(pos);
-        recyclerView.scrollToPosition(pos);
     }
 
     @Override
@@ -152,5 +149,10 @@ public class NotesListFragment extends Fragment implements
     @Override
     public void dataChanged() {
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void rowInserted(int pos) {
+        adapter.notifyItemInserted(pos);
     }
 }

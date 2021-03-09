@@ -10,6 +10,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 public class Data implements Serializable {
 
@@ -59,7 +60,22 @@ public class Data implements Serializable {
 
     public MyNote getNote(int pos) {return notes.get(pos); }
 
-    public void insert(MyNote note) { notes.add(note); }
+    public void insert(MyNote newNote) {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put(TITLE, newNote.getTitle());
+        hashMap.put(DESCRIBE, newNote.getDescribe());
+        hashMap.put(CREATED_AT, newNote.getCreate_at());
+        fireStore.collection(COLLECTION_NAME)
+                .document(newNote.getCreate_at().toString())
+                .set(hashMap)
+                .addOnSuccessListener((av) -> {
+                    notes.add(newNote);
+                    notifyDataChanged.rowInserted(getPosition(newNote));
+                })
+                .addOnFailureListener((e) -> {
+                    Log.d("TAG", "Exception: " + e);
+                });
+    }
 
     public void delete(int pos) { notes.remove(pos); }
 
@@ -71,6 +87,7 @@ public class Data implements Serializable {
 
     public interface NotifyDataChanged {
         void dataChanged();
+        void rowInserted(int pos);
     }
 
     public void setNotifyDataChanged(NotifyDataChanged notifyDataChanged) {
