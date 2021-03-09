@@ -3,6 +3,7 @@ package ru.geekbrains.android.mynotes;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -115,7 +116,6 @@ public class NotesListFragment extends Fragment implements
             case R.id.delete:
                 int pos = adapter.getItemPosition();
                 data.delete(pos);
-                adapter.notifyItemRemoved(pos);
                 break;
             default: break;
         }
@@ -141,9 +141,7 @@ public class NotesListFragment extends Fragment implements
 
     @Override
     public void save(MyNote updatedNote) {
-        int pos = data.getPosition(updatedNote);
-        adapter.notifyItemChanged(pos);
-        recyclerView.scrollToPosition(pos);
+        data.update(updatedNote);
     }
 
     @Override
@@ -154,5 +152,17 @@ public class NotesListFragment extends Fragment implements
     @Override
     public void rowInserted(int pos) {
         adapter.notifyItemInserted(pos);
+        recyclerView.scrollToPosition(pos);
+    }
+
+    @Override
+    public void rowUpdated(int pos) {
+        adapter.notifyItemChanged(pos);
+        recyclerView.scrollToPosition(pos);
+    }
+
+    @Override
+    public void rowDeleted(int pos) {
+        adapter.notifyItemRemoved(pos);
     }
 }

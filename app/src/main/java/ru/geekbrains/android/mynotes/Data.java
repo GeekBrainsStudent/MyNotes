@@ -77,7 +77,35 @@ public class Data implements Serializable {
                 });
     }
 
-    public void delete(int pos) { notes.remove(pos); }
+    public void update(MyNote updatedNote) {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put(TITLE, updatedNote.getTitle());
+        hashMap.put(DESCRIBE, updatedNote.getDescribe());
+        hashMap.put(CREATED_AT, updatedNote.getCreate_at());
+        fireStore.collection(COLLECTION_NAME)
+                .document(updatedNote.getCreate_at().toString())
+                .set(hashMap)
+                .addOnSuccessListener((av) -> {
+                    notifyDataChanged.rowUpdated(getPosition(updatedNote));
+                })
+                .addOnFailureListener((e) -> {
+                    Log.d("TAG", "Exception: " + e);
+                });
+    }
+
+    public void delete(int pos) {
+        MyNote deleteNote = notes.get(pos);
+        fireStore.collection(COLLECTION_NAME)
+                .document(deleteNote.getCreate_at().toString())
+                .delete()
+                .addOnSuccessListener((av) -> {
+                    notes.remove(pos);
+                    notifyDataChanged.rowDeleted(pos);
+                })
+                .addOnFailureListener((e) -> {
+                    Log.d("TAG", "Exception: " + e);
+                });
+    }
 
     public int size() {
         return notes.size();
@@ -88,6 +116,8 @@ public class Data implements Serializable {
     public interface NotifyDataChanged {
         void dataChanged();
         void rowInserted(int pos);
+        void rowUpdated(int pos);
+        void rowDeleted(int pos);
     }
 
     public void setNotifyDataChanged(NotifyDataChanged notifyDataChanged) {
