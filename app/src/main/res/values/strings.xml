@@ -17,4 +17,11 @@
 <!--    note fragment-->
     <string name="note_fragment_btn_save_title">save</string>
     <string name="note_fragment_btn_cancel_title">cancel</string>
+
+<!--    dialog confirm deleted-->
+    <string name="dialog_confirm_del_title">Delete note</string>
+    <string name="dialog_confirm_del_message">Are you sure?</string>
+
+    <string name="positive_btn_text">YES</string>
+    <string name="negative_btn_text">NO</string>
 </resources>

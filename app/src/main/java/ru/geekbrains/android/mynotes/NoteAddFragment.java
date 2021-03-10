@@ -9,12 +9,13 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
-public class NoteAddFragment extends Fragment {
+public class NoteAddFragment extends DialogFragment {
 
     private ConstraintLayout root;
     private AddNote addNote;
@@ -45,11 +46,14 @@ public class NoteAddFragment extends Fragment {
             String title = ((TextInputEditText)root.findViewById(R.id.title)).getText().toString();
             String describe = ((TextInputEditText)root.findViewById(R.id.describe)).getText().toString();
             MyNote newNote = new MyNote(title, describe);
+//            (((MainActivity) requireActivity()).onAddNewNote(newNote));
             addNote.add(newNote);
+            dismiss();
         });
         MaterialButton cancel = root.findViewById(R.id.btn_cancel);
         cancel.setOnClickListener((v) -> {
-            addNote.cancel();
+//            addNote.cancel();
+            dismiss();
         });
     }
 
@@ -61,7 +65,7 @@ public class NoteAddFragment extends Fragment {
 
     public interface AddNote {
         void add(MyNote newNote);
-        default void cancel() {};
+//        default void cancel() {};
     }
 }
 

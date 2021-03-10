@@ -163,11 +163,12 @@ public class MainActivity extends AppCompatActivity implements
         boolean res = super.onOptionsItemSelected(item);
         switch (item.getItemId()) {
             case R.id.add_note:
-                int fragContainer = (isLandscape) ? R.id.fragment_content : R.id.fragment_list;
+                /*int fragContainer = (isLandscape) ? R.id.fragment_content : R.id.fragment_list;
                 getSupportFragmentManager().beginTransaction()
                         .add(fragContainer, new NoteAddFragment(), TAG_NOTE_ADD)
                         .addToBackStack(null)
-                        .commit();
+                        .commit();*/
+                new NoteAddFragment().show(getSupportFragmentManager(), TAG_NOTE_ADD);
                 break;
             default:
                 break;
@@ -195,10 +196,10 @@ public class MainActivity extends AppCompatActivity implements
     public void add(MyNote newNote) {
         FragmentManager fm = getSupportFragmentManager();
 
-        NoteAddFragment noteAddFragment = (NoteAddFragment) fm.findFragmentByTag(TAG_NOTE_ADD);
+        /*NoteAddFragment noteAddFragment = (NoteAddFragment) fm.findFragmentByTag(TAG_NOTE_ADD);
         if(noteAddFragment == null)
             return;
-        fm.beginTransaction().remove(noteAddFragment).commit();
+        fm.beginTransaction().remove(noteAddFragment).commit();*/
 
         NotesListFragment notesListFragment = (NotesListFragment) fm.findFragmentByTag(TAG_LIST);
         if(notesListFragment == null)
@@ -206,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements
         notesListFragment.add(newNote);
     }
 
-    @Override
+    /*@Override
     public void cancel() {
         if(data.getNotes().size() == 0)
             return;
@@ -215,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements
         if(noteAddFragment == null)
             return;
         fm.beginTransaction().remove(noteAddFragment).commit();
-    }
+    }*/
 
     @Override
     public void save(MyNote updatedNote) {
