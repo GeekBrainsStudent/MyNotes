@@ -2,6 +2,7 @@ package ru.geekbrains.android.mynotes;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -18,6 +19,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class NotesListFragment extends Fragment implements
         NoteAddFragment.AddNote,
@@ -114,12 +117,27 @@ public class NotesListFragment extends Fragment implements
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()) {
             case R.id.delete:
-                int pos = adapter.getItemPosition();
-                data.delete(pos);
+                showDeleteConfirmDialog();
                 break;
             default: break;
         }
         return super.onContextItemSelected(item);
+    }
+
+    public void showDeleteConfirmDialog() {
+        new MaterialAlertDialogBuilder(requireActivity())
+                .setTitle(R.string.dialog_confirm_del_title)
+                .setMessage(R.string.dialog_confirm_del_message)
+                .setIcon(R.drawable.ic_baseline_delete_24)
+                .setPositiveButton(R.string.positive_btn_text, (d,w) -> {
+                    int pos = adapter.getItemPosition();
+                    data.delete(pos);
+                })
+                .setNegativeButton(R.string.negative_btn_text, (d,w) -> {
+                    d.dismiss();
+                })
+                .create()
+                .show();
     }
 
     @Override
